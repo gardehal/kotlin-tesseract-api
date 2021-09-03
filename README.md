@@ -60,3 +60,20 @@ An executable JAR can be sent directly to Heroku without going through Git.
    - $ `heroku create --no-remote`
 1. Deploy JAR
    - $ `heroku deploy:jar <jar-name>.jar --app <app-name>`
+
+For usage with Aptfile, see this guide: https://medium.com/analytics-vidhya/deploying-a-streamlit-and-opencv-based-web-application-to-heroku-456691d28c41
+ 
+Short version is to commit files (Aptfile, Procfile, .jar) to Heroku Git:
+1. Add Heroku Git remote:
+   - $ `heroku git:remote -a <your app name>`
+2. Add your files ("." will add all):
+   - $ `git add .`
+3. Commit:
+   - $ `git commit -am "Added Heroku files"`
+4. Push to main-branch:
+   - $ `git push heroku main`
+5. Assuming your process is called "web" in the Procfile, start the app:
+   - $ `heroku ps:scale web=1`
+
+Running bash inside Heroku might be useful for debug.
+- `$ heroku run bash`

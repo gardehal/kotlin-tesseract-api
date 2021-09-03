@@ -130,6 +130,12 @@ class TesseactService
      **/
     fun mkdirIfNone(path: String): Boolean
     {
+        println("------------------------------------")
+        println(Paths.get("").toAbsolutePath().toString())
+        println(path)
+        println(File(path).exists())
+        println(File(path).mkdir())
+
         if(!File(path).exists())
             return File(path).mkdir()
 
