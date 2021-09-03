@@ -73,10 +73,10 @@ class TesseactService
      **/
     fun processImage(bytes: ByteArray, fileExtension: String, lang: TesseractLanguage): TesseractResult
     {
+        mkdirIfNone(appProperties.tempDir!!)
         val tempFilename = getTempFilename(fileExtension)
         File(tempFilename).writeBytes(bytes)
 
-        mkdirIfNone("temp")
         val file = File(tempFilename)
         val rawText = readImage(file, lang)
         file.delete()
