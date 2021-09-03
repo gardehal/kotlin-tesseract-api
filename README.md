@@ -17,6 +17,7 @@ https://towardsdatascience.com/deploy-python-tesseract-ocr-on-heroku-bbcc39391a8
 - Heroku
 - Move some app properties to .env (apiKeys, tempDir, maxFileSizeBytes?, installFullPath)
 - get app to read aptFile, not app.propperties (installedLanguages) 
+- remove src etc. from heroku git
 
 ## Usage (Windows)
 
@@ -77,3 +78,8 @@ Short version is to commit files (Aptfile, Procfile, .jar) to Heroku Git:
 
 Running bash inside Heroku might be useful for debug.
 - `$ heroku run bash`
+
+Find Tessdata:
+- `$ find -iname tessdata`
+Watch tesseract:
+- `$ which tesseract`
