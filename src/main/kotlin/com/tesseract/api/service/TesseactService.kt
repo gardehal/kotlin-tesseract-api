@@ -76,6 +76,7 @@ class TesseactService
         val tempFilename = getTempFilename(fileExtension)
         File(tempFilename).writeBytes(bytes)
 
+        mkdirIfNone("temp")
         val file = File(tempFilename)
         val rawText = readImage(file, lang)
         file.delete()
@@ -111,13 +112,27 @@ class TesseactService
     fun getTempFilename(extension: String): String
     {
         return Paths.get(appProperties.tempDir!!, LocalDateTime.now()
-                .toString()
-                .replace("-", "")
-                .replace(":", "")
-                .replace(".", "")
-                .replace("T", "")
+            .toString()
+            .replace("-", "")
+            .replace(":", "")
+            .replace(".", "")
+            .replace("T", "")
                 + ".${extension}")
             .toAbsolutePath()
             .toString()
+    }
+
+    /**
+     * Make directory path if it does not exist.
+     * @param path String path, relative or absolute
+     * @return Boolean result of making file, true if made
+     * @throws none
+     **/
+    fun mkdirIfNone(path: String): Boolean
+    {
+        if(!File(path).exists())
+            return File(path).mkdir()
+
+        return false
     }
 }
