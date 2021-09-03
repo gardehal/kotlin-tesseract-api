@@ -1,0 +1,8 @@
+version: "3.2"
+
+services: # Parent of all services
+  api: # Service names (Usually "web"/"db", referring to a special predefined config or usage?)
+    build: # Build specifications
+      context: . # Context, "." refers to the file named "Dockerfile" in the same directory
+    ports: # Port mapping
+      - "8080:8080"
