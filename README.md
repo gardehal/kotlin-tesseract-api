@@ -52,6 +52,8 @@ Run using Docker-Compose:
 
 ## Heroku Deploy (CLI)
 
+https://devcenter.heroku.com/articles/heroku-cli-commands
+
 An executable JAR can be sent directly to Heroku without going through Git.
 1. Set up your ProcFile
 1. Build an executable JAR file, see [Usage (Windows)](#usage-(windows))

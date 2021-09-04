@@ -1,6 +1,5 @@
 package com.tesseract.api.intercept
 
-import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.annotation.Order
@@ -34,24 +33,11 @@ class AppProperties
     var resourceDir: String? = null
     @Value("\${server.envPath}")
     var envPath: String? = null
-
     @Value("\${server.tokenHeaderName}")
     var tokenHeaderName: String? = null
-//    @Value("\${server.apiKeys}")
-//    var apiKeys: String? = null
-//    @Value("\${server.tempDir}")
-//    var tempDir: String? = null
-//    @Value("\${server.maxFileSizeBytes}")
-//    var maxFileSizeBytes: Long? = null
 
-//    @Value("\${tesseract.installedLanguages}")
-//    var installedLanguages: String? = null
     @Value("\${tesseract.languagesFile}")
     var languagesFile: String? = null
-//    @Value("\${tesseract.installFullPath}")
-//    var installFullPath: String? = null
-    @Value("\${tesseract.userDefinedDpi}")
-    var userDefinedDpi: Int? = null
 
     // .env, which enables Heroku to set the save values when the .env file is not present (i.e. don't push .env to Git)
     private val envFile = File("src\\\\main\\\\resources\\\\.env")
