@@ -94,7 +94,7 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
                 ?: return ResponseEntity.status(400).body(
                     WrappedResponse<TesseractResultDto>(code = 400, message = "languageKey \"$languageKey\" does not exist.").validated())
 
-            if(base64.toByteArray().size >= (appProperties.maxFileSizeBytes!! * 1.33) || base64.base64FileSize() >= appProperties.maxFileSizeBytes!!)
+            if(base64.toByteArray().size >= (appProperties.maxFileSizeBytes * 1.33) || base64.base64FileSize() >= appProperties.maxFileSizeBytes!!)
                 return ResponseEntity.status(400).body(
                     WrappedResponse<TesseractResultDto>(code = 400, message = "base64 string (image) was too large, max ${appProperties.maxFileSizeBytes!!/1000} kb.").validated())
 

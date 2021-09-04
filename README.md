@@ -18,6 +18,7 @@ https://towardsdatascience.com/deploy-python-tesseract-ocr-on-heroku-bbcc39391a8
 - Move some app properties to .env (apiKeys, tempDir, maxFileSizeBytes?, installFullPath), implement
 - get API to read aptFile, not app.propperties to find installedLanguages ? abd idea 
 - remove src etc. from heroku git, only apt, proc, jar needed
+- assuming tess buildpack works, simplyfy aptfile?
 
 ## Usage (Windows)
 
@@ -81,6 +82,8 @@ Short version is to commit files (Aptfile, Procfile, .jar) to Heroku Git:
 5. Assuming your process is called "web" in the Procfile, start the app:
    - $ `heroku ps:scale web=1`
 
+Restart dynos (restart app):
+- `$ heroku ps:restart`
 Running bash inside Heroku might be useful for debug.
 - `$ heroku run bash`
 Find Tessdata:

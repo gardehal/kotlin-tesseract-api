@@ -76,7 +76,7 @@ class TesseactService
      **/
     fun processImage(bytes: ByteArray, fileExtension: String, lang: TesseractLanguage): TesseractResult
     {
-        mkdirIfNone(appProperties.tempDir!!)
+        mkdirIfNone(appProperties.tempDir)
         val tempFilename = getTempFilename(fileExtension)
         File(tempFilename).writeBytes(bytes)
 
@@ -114,7 +114,7 @@ class TesseactService
      **/
     fun getTempFilename(extension: String): String
     {
-        return Paths.get(appProperties.tempDir!!, LocalDateTime.now()
+        return Paths.get(appProperties.tempDir, LocalDateTime.now()
             .toString()
             .replace("-", "")
             .replace(":", "")

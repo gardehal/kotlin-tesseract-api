@@ -34,6 +34,7 @@ class TesseractApi
 	{
 		println("Starting TesseractApi on ${appProperties.host}:${appProperties.port}")
 		println("http://${appProperties.host}:${appProperties.port}/swagger-ui.html")
+		println("isProduction: ${appProperties.isProduction}")
 
 		return Docket(DocumentationType.SWAGGER_2)
 			.apiInfo(apiInfo())
