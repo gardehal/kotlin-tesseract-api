@@ -15,9 +15,9 @@ https://towardsdatascience.com/deploy-python-tesseract-ocr-on-heroku-bbcc39391a8
 ## TODO
 
 - Heroku
-- Move some app properties to .env (apiKeys, tempDir, maxFileSizeBytes?, installFullPath)
-- get app to read aptFile, not app.propperties (installedLanguages) 
-- remove src etc. from heroku git
+- Move some app properties to .env (apiKeys, tempDir, maxFileSizeBytes?, installFullPath), implement
+- get API to read aptFile, not app.propperties to find installedLanguages ? abd idea 
+- remove src etc. from heroku git, only apt, proc, jar needed
 
 ## Usage (Windows)
 
@@ -62,6 +62,11 @@ An executable JAR can be sent directly to Heroku without going through Git.
 1. Deploy JAR
    - $ `heroku deploy:jar <jar-name>.jar --app <app-name>`
 
+Tesseract needs buildpacks and extra modules:
+- https://github.com/heroku/heroku-buildpack-apt
+- https://github.com/oswellchan/heroku-buildpack-tesseract
+- heroku/jvm
+
 For usage with Aptfile, see this guide: https://medium.com/analytics-vidhya/deploying-a-streamlit-and-opencv-based-web-application-to-heroku-456691d28c41
  
 Short version is to commit files (Aptfile, Procfile, .jar) to Heroku Git:
@@ -78,7 +83,6 @@ Short version is to commit files (Aptfile, Procfile, .jar) to Heroku Git:
 
 Running bash inside Heroku might be useful for debug.
 - `$ heroku run bash`
-
 Find Tessdata:
 - `$ find -iname tessdata`
 Watch tesseract:

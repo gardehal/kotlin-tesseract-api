@@ -3,6 +3,7 @@ package com.tesseract.api.service
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.tesseract.api.intercept.AppProperties
+import com.tesseract.api.intercept.DotEnvProperties
 import com.tesseract.api.model.TesseractLanguage
 import com.tesseract.api.model.TesseractResult
 import net.sourceforge.tess4j.Tesseract
@@ -18,6 +19,8 @@ class TesseactService
 {
     @Autowired
     lateinit var appProperties: AppProperties
+    @Autowired
+    lateinit var dotEnvProperties: DotEnvProperties
 
     val mapper = jacksonObjectMapper()
 

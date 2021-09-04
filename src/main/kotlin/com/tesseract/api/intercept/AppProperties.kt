@@ -8,10 +8,29 @@ import org.springframework.stereotype.Component
 @Order(0)
 class AppProperties
 {
+    @Value("\${project.basePackage}")
+    var projectBasePackage: String? = null
+    @Value("\${project.creator}")
+    var projectCreator: String? = null
+    @Value("\${project.url}")
+    var projectUrl: String? = null
+    @Value("\${project.email}")
+    var projectEmail: String? = null
+    @Value("\${project.title}")
+    var projectTitle: String? = null
+    @Value("\${project.version}")
+    var projectVersion: String? = null
+    @Value("\${project.isTestProject}")
+    var projectIsTestProject: String? = null
+
     @Value("\${server.host}")
     var host: String? = null
     @Value("\${server.port}")
     var port: Int? = null
+    @Value("\${server.resourceDir}")
+    var resourceDir: String? = null
+    @Value("\${server.envPath}")
+    var envPath: String? = null
 
     @Value("\${server.tokenHeaderName}")
     var tokenHeaderName: String? = null

@@ -3,6 +3,7 @@ package com.tesseract.api.controller
 import com.tesseract.api.dto.TesseractResultConverter
 import com.tesseract.api.dto.TesseractResultDto
 import com.tesseract.api.intercept.AppProperties
+import com.tesseract.api.intercept.DotEnvProperties
 import com.tesseract.api.model.HealthStatus
 import com.tesseract.api.model.TesseractLanguage
 import com.tesseract.api.model.WrappedResponse
@@ -24,6 +25,8 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
 {
     @Autowired
     lateinit var appProperties: AppProperties
+    @Autowired
+    lateinit var dotEnvProperties: DotEnvProperties
 
     val tesseactService = tesseactService?: TesseactService()
     val utilService = utilService?: UtilService()
@@ -44,7 +47,7 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
         catch (e: Exception)
         {
             println(" ---- TesseractController, getHealth error ---- ")
-            println(e)
+            println(e.stackTrace)
 
             ResponseEntity.status(500).body(
                 WrappedResponse<HealthStatus>(code = 500, message = "Internal error.").validated())
@@ -67,7 +70,7 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
         catch (e: Exception)
         {
             println(" ---- TesseractController, getLanguages error ---- ")
-            println(e)
+            println(e.stackTrace)
 
             ResponseEntity.status(500).body(
                 WrappedResponse<List<TesseractLanguage>>(code = 500, message = "Internal error.").validated())
@@ -103,7 +106,7 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
         catch (e: Exception)
         {
             println(" ---- TesseractController, scanImage error ---- ")
-            println(e)
+            println(e.stackTrace)
 
             ResponseEntity.status(500).body(
                 WrappedResponse<TesseractResultDto>(code = 500, message = "Internal error.").validated())
