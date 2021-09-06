@@ -4,21 +4,11 @@ API for image reading with Tesseract.
 
 https://grd-tesseract-api.herokuapp.com/swagger
 
-https://github.com/tesseract-ocr/tessdoc
-https://www.baeldung.com/java-ocr-tesseract
-https://stackoverflow.com/questions/48446708/securing-spring-boot-api-with-api-key-and-secret
-https://stackoverflow.com/questions/50467035/adding-a-header-to-all-swagger-requests
-https://medium.com/@rejaluo/read-spring-boot-application-properties-in-kotlin-e8deb7682294
-
-https://towardsdatascience.com/deploy-python-tesseract-ocr-on-heroku-bbcc39391a8d ?
-
 ## TODO
 
-- Heroku
-- Move some app properties to .env (apiKeys, tempDir, maxFileSizeBytes?, installFullPath), implement
-- get API to read aptFile, not app.propperties to find installedLanguages ? abd idea 
 - remove src etc. from heroku git, only apt, proc, jar needed
-- assuming tess buildpack works, simplyfy aptfile?
+  - github final version 
+- Handle base64 without data:image..
 
 ## Usage (Windows)
 
@@ -65,9 +55,13 @@ An executable JAR can be sent directly to Heroku without going through Git.
 1. Deploy JAR
    - $ `heroku deploy:jar <jar-name>.jar --app <app-name>`
 
+**NOTE**: Tesseract doesn't seem to be working well with the heroku-20 (Ubuntu 20.04) stack. 
+Set heroku-18 stack:
+- `$ heroku stack` (optional)
+- `$ heroku stack:set heroku-18`
+
 Tesseract needs buildpacks and extra modules:
 - https://github.com/heroku/heroku-buildpack-apt
-- https://github.com/oswellchan/heroku-buildpack-tesseract
 - heroku/jvm
 
 For usage with Aptfile, see this guide: https://medium.com/analytics-vidhya/deploying-a-streamlit-and-opencv-based-web-application-to-heroku-456691d28c41
@@ -92,3 +86,15 @@ Find Tessdata:
 - `$ find -iname tessdata`
 Watch tesseract:
 - `$ which tesseract`
+
+## Useful links
+
+- Tesseract documentation: https://github.com/tesseract-ocr/tessdoc
+- Tesseract usage with Java: https://www.baeldung.com/java-ocr-tesseract
+- Spring API keys: https://stackoverflow.com/questions/48446708/securing-spring-boot-api-with-api-key-and-secret
+- Swagger header: https://stackoverflow.com/questions/50467035/adding-a-header-to-all-swagger-requests
+- Better usage of app properties: https://medium.com/@rejaluo/read-spring-boot-application-properties-in-kotlin-e8deb7682294
+- App properties simpler file annotation: https://stackoverflow.com/questions/45953118/kotlin-spring-boot-configurationproperties
+- Tesseract on Heroku Aptfile: https://towardsdatascience.com/deploy-python-tesseract-ocr-on-heroku-bbcc39391a8d
+- Alternative usage of Tesseract (may not be supported by tess4j dependency, but works with CMD `$ tesseract -v`): https://github.com/pathwaysmedical/heroku-buildpack-tesseract
+- Fix for using Tesseract in Heroku, stack to heroku-18: https://stackoverflow.com/questions/66087588/tesseract-error-while-loading-shared-libraries-libarchive-so-13-python
