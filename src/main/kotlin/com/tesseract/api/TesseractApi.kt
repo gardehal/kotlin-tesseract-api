@@ -27,7 +27,6 @@ class TesseractApi
 {
 	@Autowired
 	lateinit var appProperties: AppProperties
-	//	http://localhost:8080/swagger-ui.html
 
 	@Bean
 	fun api(): Docket
