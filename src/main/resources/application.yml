@@ -1,0 +1,18 @@
+app:
+  basePackage: com.tesseract.api
+  creator: dev
+  url: .
+  email: email
+  title: Tesseract API
+  desc: API for image reading with Tesseract. yaml
+  version: 0.0.1
+
+  host: localhost
+  port: 8080
+  resourceDir: main
+  envPath: src\\main\\resources\\.env
+
+  # Security
+  tokenHeaderName: apiKey
+
+  languagesFile: tesseract-supported-languages.json

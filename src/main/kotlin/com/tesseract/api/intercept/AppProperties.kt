@@ -1,43 +1,28 @@
 package com.tesseract.api.intercept
 
 import io.github.cdimascio.dotenv.dotenv
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.annotation.Order
-import org.springframework.stereotype.Component
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Configuration
 import java.io.File
 
-@Component
-@Order(0)
+@Configuration
+@ConfigurationProperties(prefix = "app")
 class AppProperties
 {
-    @Value("\${project.basePackage}")
-    var projectBasePackage: String? = null
-    @Value("\${project.creator}")
-    var projectCreator: String? = null
-    @Value("\${project.url}")
-    var projectUrl: String? = null
-    @Value("\${project.email}")
-    var projectEmail: String? = null
-    @Value("\${project.title}")
-    var projectTitle: String? = null
-    @Value("\${project.version}")
-    var projectVersion: String? = null
-    @Value("\${project.isTestProject}")
-    var projectIsTestProject: String? = null
+    lateinit var basePackage: String
+    lateinit var creator: String
+    lateinit var url: String
+    lateinit var email: String
+    lateinit var title: String
+    lateinit var desc: String
+    lateinit var version: String
 
-    @Value("\${server.host}")
-    var host: String? = null
-    @Value("\${server.port}")
-    var port: Int? = null
-    @Value("\${server.resourceDir}")
-    var resourceDir: String? = null
-    @Value("\${server.envPath}")
-    var envPath: String? = null
-    @Value("\${server.tokenHeaderName}")
-    var tokenHeaderName: String? = null
-
-    @Value("\${tesseract.languagesFile}")
-    var languagesFile: String? = null
+    lateinit var host: String
+    lateinit var port: String
+    lateinit var resourceDir: String
+    lateinit var envPath: String
+    lateinit var tokenHeaderName: String
+    lateinit var languagesFile: String
 
     // .env, which enables Heroku to set the save values when the .env file is not present (i.e. don't push .env to Git)
     private val envFile = File("src\\\\main\\\\resources\\\\.env")
