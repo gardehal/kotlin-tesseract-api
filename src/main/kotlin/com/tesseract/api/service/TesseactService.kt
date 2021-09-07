@@ -19,8 +19,6 @@ class TesseactService
 {
     @Autowired
     lateinit var appProperties: AppProperties
-    @Autowired
-    lateinit var dotEnvProperties: DotEnvProperties
 
     val mapper = jacksonObjectMapper()
 
@@ -34,7 +32,7 @@ class TesseactService
     {
         val langAllJson = this::class.java.classLoader.getResource(appProperties.languagesFile)?.readText(Charsets.UTF_8)
         val langAll = mapper.readValue<ArrayList<TesseractLanguage>>(langAllJson.orEmpty())
-        return langAll.filter { l -> appProperties.installedLanguages!!.contains(l.key!!) }
+        return langAll.filter { l -> appProperties.installedLanguages.contains(l.key!!) }
     }
 
     /**
@@ -69,15 +67,17 @@ class TesseactService
     /**
      * Process image from ByteArray and get the text in it
      * @param bytes ByteArray of image content
-     * @param fileExtension String file extension without .
+     * @param fileExtension String? file extension without .
      * @param lang TesseractLanguage to use when reading
      * @return TesseractResult
      * @throws none
      **/
-    fun processImage(bytes: ByteArray, fileExtension: String, lang: TesseractLanguage): TesseractResult
+    fun processImage(bytes: ByteArray, fileExtension: String?, lang: TesseractLanguage): TesseractResult
     {
         mkdirIfNone(appProperties.tempDir)
-        val tempFilename = getTempFilename(fileExtension)
+
+        val _fileExtension = fileExtension ?: bytes.guessMimeType().split("/").last()
+        val tempFilename = getTempFilename(_fileExtension)
         File(tempFilename).writeBytes(bytes)
 
         val file = File(tempFilename)
