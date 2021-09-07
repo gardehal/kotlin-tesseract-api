@@ -3,7 +3,6 @@ package com.tesseract.api.controller
 import com.tesseract.api.dto.TesseractResultConverter
 import com.tesseract.api.dto.TesseractResultDto
 import com.tesseract.api.intercept.AppProperties
-import com.tesseract.api.intercept.DotEnvProperties
 import com.tesseract.api.model.HealthStatus
 import com.tesseract.api.model.TesseractLanguage
 import com.tesseract.api.model.WrappedResponse
@@ -13,6 +12,7 @@ import com.tesseract.api.service.base64FileSize
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
+import org.apache.tomcat.util.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -25,8 +25,6 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
 {
     @Autowired
     lateinit var appProperties: AppProperties
-    @Autowired
-    lateinit var dotEnvProperties: DotEnvProperties
 
     val tesseactService = tesseactService?: TesseactService()
     val utilService = utilService?: UtilService()
@@ -47,7 +45,7 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
         catch (e: Exception)
         {
             println(" ---- TesseractController, getHealth error ---- ")
-            println(e.stackTrace)
+            e.printStackTrace()
 
             ResponseEntity.status(500).body(
                 WrappedResponse<HealthStatus>(code = 500, message = "Internal error.").validated())
@@ -70,7 +68,7 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
         catch (e: Exception)
         {
             println(" ---- TesseractController, getLanguages error ---- ")
-            println(e.stackTrace)
+            e.printStackTrace()
 
             ResponseEntity.status(500).body(
                 WrappedResponse<List<TesseractLanguage>>(code = 500, message = "Internal error.").validated())
@@ -84,19 +82,23 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
     fun scanImage(@ApiParam("Three letter language key")
                   @RequestParam(value = "languageKey", required = false, defaultValue = "eng")
                   languageKey: String,
-                  @ApiParam("base64 string")
+                  @ApiParam("base64 encoded string from image")
                   @RequestBody
                   base64: String): ResponseEntity<WrappedResponse<TesseractResultDto>>
     {
         return try
         {
+            if(!Base64.isBase64(base64))
+                return ResponseEntity.status(400).body(
+                    WrappedResponse<TesseractResultDto>(code = 400, message = "base64 string was not readable as valid base64. Include metadata prefix or see https://en.wikipedia.org/wiki/Base64").validated())
+
+            if(base64.toByteArray().size >= (appProperties.maxFileSizeBytes * 1.33) || base64.base64FileSize() >= appProperties.maxFileSizeBytes)
+                return ResponseEntity.status(400).body(
+                    WrappedResponse<TesseractResultDto>(code = 400, message = "base64 string (file) was too large, max ${appProperties.maxFileSizeBytes/1000} kb.").validated())
+
             val lang = tesseactService.getTesseractLanguage(languageKey)
                 ?: return ResponseEntity.status(400).body(
                     WrappedResponse<TesseractResultDto>(code = 400, message = "languageKey \"$languageKey\" does not exist.").validated())
-
-            if(base64.toByteArray().size >= (appProperties.maxFileSizeBytes * 1.33) || base64.base64FileSize() >= appProperties.maxFileSizeBytes!!)
-                return ResponseEntity.status(400).body(
-                    WrappedResponse<TesseractResultDto>(code = 400, message = "base64 string (image) was too large, max ${appProperties.maxFileSizeBytes!!/1000} kb.").validated())
 
             val res = tesseactService.processImage(base64, lang)
 
@@ -106,7 +108,7 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
         catch (e: Exception)
         {
             println(" ---- TesseractController, scanImage error ---- ")
-            println(e.stackTrace)
+            e.printStackTrace()
 
             ResponseEntity.status(500).body(
                 WrappedResponse<TesseractResultDto>(code = 500, message = "Internal error.").validated())
