@@ -2,6 +2,9 @@ package com.tesseract.api.service
 
 import com.tesseract.api.model.HealthStatus
 import org.springframework.stereotype.Service
+import java.io.BufferedInputStream
+import java.io.ByteArrayInputStream
+import java.net.URLConnection
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -94,7 +97,7 @@ fun String.cleanString(): String
  **/
 fun String.base64FileContent(): String
 {
-    return this.split(",")[1]
+    return if(this.contains(",")) this.split(",")[1].split("/")[1] else this
 }
 
 /**
@@ -103,9 +106,15 @@ fun String.base64FileContent(): String
  * @return String
  * @throws none
  **/
-fun String.base64FileExtension(): String
+fun String.base64FileExtension(): String?
 {
-    return this.split(";")[0].split("/")[1]
+    return if(this.contains(";")) this.split(";")[0].split("/")[1] else null
+}
+
+fun ByteArray.guessMimeType(): String
+{
+    val stream = BufferedInputStream(ByteArrayInputStream(this))
+    return URLConnection.guessContentTypeFromStream(stream)
 }
 
 /**
@@ -118,3 +127,4 @@ fun String.base64FileSize(): Long
 {
     return (this.length.toLong() * 3)/4 - (Regex("=").findAll(this).count() - 2)
 }
+
