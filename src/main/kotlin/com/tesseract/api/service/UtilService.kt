@@ -1,6 +1,9 @@
 package com.tesseract.api.service
 
+import com.tesseract.api.intercept.AppProperties
 import com.tesseract.api.model.HealthStatus
+import com.tesseract.api.model.TesseractLanguage
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.io.BufferedInputStream
 import java.io.ByteArrayInputStream
@@ -9,10 +12,14 @@ import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.annotation.PostConstruct
+import org.apache.tomcat.util.codec.binary.Base64
 
 @Service
 class UtilService
 {
+    @Autowired
+    lateinit var appProperties: AppProperties
+
     lateinit var apiUpDateTimeString: String
 
     @PostConstruct
@@ -76,6 +83,17 @@ class UtilService
             null
         }
     }
+
+    /**
+     * Get boolean whether language is installed or not
+     * @param this TesseractLanguage to check
+     * @return Long
+     * @throws none
+     **/
+    fun isLanguagePackInstalled(language: TesseractLanguage): Boolean
+    {
+        return appProperties.installedLanguages.contains(language.key!!)
+    }
 }
 
 /**
@@ -126,5 +144,16 @@ fun ByteArray.guessMimeType(): String
 fun String.base64FileSize(): Long
 {
     return (this.length.toLong() * 3)/4 - (Regex("=").findAll(this).count() - 2)
+}
+
+/**
+ * Check whether string contains valid base64 or not
+ * @param this String base64
+ * @return Boolean
+ * @throws none
+ **/
+fun String.containsValidBase64(): Boolean
+{
+    return if(this.contains(",")) Base64.isBase64(this.split(",")[1]) else Base64.isBase64(this)
 }
 
