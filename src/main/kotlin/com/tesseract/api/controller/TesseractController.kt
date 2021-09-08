@@ -5,14 +5,15 @@ import com.tesseract.api.dto.TesseractResultDto
 import com.tesseract.api.intercept.AppProperties
 import com.tesseract.api.model.HealthStatus
 import com.tesseract.api.model.TesseractLanguage
+import com.tesseract.api.model.TesseractResult
 import com.tesseract.api.model.WrappedResponse
 import com.tesseract.api.service.TesseactService
 import com.tesseract.api.service.UtilService
 import com.tesseract.api.service.base64FileSize
+import com.tesseract.api.service.containsValidBase64
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
-import org.apache.tomcat.util.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -88,7 +89,7 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
     {
         return try
         {
-            if(!Base64.isBase64(base64))
+            if(!base64.containsValidBase64())
                 return ResponseEntity.status(400).body(
                     WrappedResponse<TesseractResultDto>(code = 400, message = "base64 string was not readable as valid base64. Include metadata prefix or see https://en.wikipedia.org/wiki/Base64").validated())
 
@@ -99,6 +100,10 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
             val lang = tesseactService.getTesseractLanguage(languageKey)
                 ?: return ResponseEntity.status(400).body(
                     WrappedResponse<TesseractResultDto>(code = 400, message = "languageKey \"$languageKey\" does not exist.").validated())
+
+            if(!utilService.isLanguagePackInstalled(lang))
+                return ResponseEntity.status(400).body(
+                    WrappedResponse<TesseractResultDto>(code = 400, message = "The language pack for ${lang.name} is not installed, see /languages for a list.").validated())
 
             val res = tesseactService.processImage(base64, lang)
 
