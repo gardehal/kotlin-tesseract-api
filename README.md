@@ -7,8 +7,7 @@ https://grd-tesseract-api.herokuapp.com/swagger
 ## TODO
 
 - remove src etc. from heroku git, only apt, proc, jar needed
-  - github final version 
-- Handle base64 without data:image..
+- github push final version
 
 ## Usage (Windows)
 
@@ -77,6 +76,9 @@ Short version is to commit files (Aptfile, Procfile, .jar) to Heroku Git:
    - $ `git push heroku main`
 5. Assuming your process is called "web" in the Procfile, start the app:
    - $ `heroku ps:scale web=1`
+
+**NOTE**: To update the environment, a build though Herokus Git must be made. This will also update the app if, and only if, an updated .jar file was added in the commit.
+Otherwise it is possible to update the app though deploy:jar (?)
 
 Restart dynos (restart app):
 - `$ heroku ps:restart`
