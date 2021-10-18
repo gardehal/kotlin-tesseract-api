@@ -29,4 +29,3 @@ hs_err_pid*
 env.*
 *.iml
 **/.env
-/src
