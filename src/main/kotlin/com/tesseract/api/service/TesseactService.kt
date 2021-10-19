@@ -3,9 +3,7 @@ package com.tesseract.api.service
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.tesseract.api.intercept.AppProperties
-import com.tesseract.api.intercept.DotEnvProperties
-import com.tesseract.api.model.TesseractLanguage
-import com.tesseract.api.model.TesseractResult
+import com.tesseract.api.model.*
 import net.sourceforge.tess4j.Tesseract
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -58,10 +56,13 @@ class TesseactService
      * @return TesseractResult
      * @throws none
      **/
-    fun processImage(base64: String, lang: TesseractLanguage): TesseractResult
+    fun processImage(
+        base64: String, lang: TesseractLanguage,
+        pageSeg: PageSegmentationMode,
+        engineMode: OcrEngineMode): TesseractResult
     {
         val imageBytes = Base64.getDecoder().decode(base64.base64FileContent())
-        return processImage(imageBytes, base64.base64FileExtension(), lang)
+        return processImage(imageBytes, base64.base64FileExtension(), lang, pageSeg, engineMode)
     }
 
     /**
@@ -72,16 +73,17 @@ class TesseactService
      * @return TesseractResult
      * @throws none
      **/
-    fun processImage(bytes: ByteArray, fileExtension: String?, lang: TesseractLanguage): TesseractResult
+    fun processImage(bytes: ByteArray, fileExtension: String?, lang: TesseractLanguage,
+                     pageSeg: PageSegmentationMode, engineMode: OcrEngineMode): TesseractResult
     {
         mkdirIfNone(appProperties.tempDir)
 
-        val _fileExtension = fileExtension ?: bytes.guessMimeType().split("/").last()
-        val tempFilename = getTempFilename(_fileExtension)
+        val extension = fileExtension ?: bytes.guessMimeType().split("/").last()
+        val tempFilename = getTempFilename(extension)
         File(tempFilename).writeBytes(bytes)
 
         val file = File(tempFilename)
-        val rawText = readImage(file, lang)
+        val rawText = readImage(file, lang, pageSeg, engineMode)
         file.delete()
 
         return TesseractResult(rawText, rawText.cleanString(), lang)
@@ -94,13 +96,14 @@ class TesseactService
      * @return String
      * @throws none
      **/
-    fun readImage(file: File, lang: TesseractLanguage): String
+    fun readImage(file: File, lang: TesseractLanguage,
+                  pageSeg: PageSegmentationMode, engineMode: OcrEngineMode): String
     {
         val tesseract = Tesseract()
         tesseract.setLanguage((lang.key))
         tesseract.setDatapath(appProperties.installFullPath)
-        tesseract.setPageSegMode(1)
-        tesseract.setOcrEngineMode(1)
+        tesseract.setPageSegMode(pageSeg.ordinal)
+        tesseract.setOcrEngineMode(engineMode.ordinal)
 //        tesseract.setTessVariable("user_defined_dpi", appProperties.userDefinedDpi) // Optional, Tesseract will approximate DPI and resolution
 
         return tesseract.doOCR(file)
