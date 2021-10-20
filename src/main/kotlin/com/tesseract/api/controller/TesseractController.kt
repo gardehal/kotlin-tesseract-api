@@ -3,10 +3,7 @@ package com.tesseract.api.controller
 import com.tesseract.api.dto.TesseractResultConverter
 import com.tesseract.api.dto.TesseractResultDto
 import com.tesseract.api.intercept.AppProperties
-import com.tesseract.api.model.HealthStatus
-import com.tesseract.api.model.TesseractLanguage
-import com.tesseract.api.model.TesseractResult
-import com.tesseract.api.model.WrappedResponse
+import com.tesseract.api.model.*
 import com.tesseract.api.service.TesseactService
 import com.tesseract.api.service.UtilService
 import com.tesseract.api.service.base64FileSize
@@ -15,6 +12,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.annotation.AliasFor
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -76,6 +74,26 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
         }
     }
 
+    @ApiOperation("Upload and scan an image for text using integers for parameters")
+    @PostMapping(
+        path = ["/scanImageBase64IntParams"],
+        produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun scanImage(@ApiParam("Three letter language key")
+                  @RequestParam(value = "languageKey", required = false, defaultValue = "eng")
+                  languageKey: String,
+                  @ApiParam("base64 encoded string from image")
+                  @RequestBody
+                  base64: String,
+                  @ApiParam("Page segmentation of image")
+                  @RequestParam(value = "pageSegmentationMode", required = false, defaultValue = "3")
+                  pageSegmentationMode: Int?,
+                  @ApiParam("Image scan engine mode")
+                  @RequestParam(value = "engineMode", required = false, defaultValue = "3")
+                  engineMode: Int?): ResponseEntity<WrappedResponse<TesseractResultDto>>
+    {
+        return scanImage(languageKey, base64, PageSegmentationMode.values()[pageSegmentationMode!!], OcrEngineMode.values()[engineMode!!])
+    }
+
     @ApiOperation("Upload and scan an image for text")
     @PostMapping(
         path = ["/scanImageBase64"],
@@ -85,7 +103,13 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
                   languageKey: String,
                   @ApiParam("base64 encoded string from image")
                   @RequestBody
-                  base64: String): ResponseEntity<WrappedResponse<TesseractResultDto>>
+                  base64: String,
+                  @ApiParam("Page segmentation of image")
+                  @RequestParam(value = "pageSegmentationMode", required = false, defaultValue = "FULLY_AUTOMATIC_PAGE_SEG")
+                  pageSegmentationMode: PageSegmentationMode,
+                  @ApiParam("Image scan engine mode")
+                  @RequestParam(value = "engineMode", required = false, defaultValue = "DEFAULT")
+                  engineMode: OcrEngineMode): ResponseEntity<WrappedResponse<TesseractResultDto>>
     {
         return try
         {
@@ -105,7 +129,10 @@ class TesseractController(tesseactService: TesseactService? = null, utilService:
                 return ResponseEntity.status(400).body(
                     WrappedResponse<TesseractResultDto>(code = 400, message = "The language pack for ${lang.name} is not installed, see /languages for a list.").validated())
 
-            val res = tesseactService.processImage(base64, lang)
+            val res = tesseactService.processImage(
+                base64 = base64, lang = lang,
+                pageSeg = pageSegmentationMode,
+                engineMode = engineMode)
 
             ResponseEntity.status(200).body(
                 WrappedResponse(code = 200, data = TesseractResultConverter.transform(res)).validated())
