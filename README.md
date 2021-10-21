@@ -6,9 +6,6 @@ https://grd-tesseract-api.herokuapp.com/swagger
 
 ## TODO
 
-- remove src etc. from heroku git, only apt, proc, jar needed
-- github push final version
-
 ## Usage (Windows)
 
 Running in IntelliJ:
@@ -91,6 +88,7 @@ Watch tesseract:
 
 ## Useful links
 
+- Some tricks for improving results: https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html
 - Tesseract documentation: https://github.com/tesseract-ocr/tessdoc
 - Tesseract usage with Java: https://www.baeldung.com/java-ocr-tesseract
 - Spring API keys: https://stackoverflow.com/questions/48446708/securing-spring-boot-api-with-api-key-and-secret
