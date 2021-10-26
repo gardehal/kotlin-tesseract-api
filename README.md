@@ -4,7 +4,15 @@ API for image reading with Tesseract.
 
 https://grd-tesseract-api.herokuapp.com/swagger
 
-## TODO
+## Improve reading result
+
+- Remove static and irrelevant data, including cut off words or sentences, symbols and orther artifacts like smidgeons, anything that is not the text you want to capture. Even seemingly irrelevant parts of an image, lime the vertical edge of a piece of paper, may be interperated as text, eg. "|" for the the page edge. Text close to the edge of the image may also be ignored.
+  - Here is an example of a bad screengrab or potential image of text. Notice the cut off line at the top, the cut of word before the colon, the lack of space on the left, the marking of "simple" as well as the marker interfering, and the arrow on the right: ![example-bad-framing](./docs/example-bad-text-frame.png)
+  - Example of a good framing. Notice that the picture contains all the words and letters we want to scan, there is a devent frame around the text, and no blocking of any words: ![example-good-framing](./docs/example-good-text-frame.png)
+- Set the correct language, Tesseract will use language syntax and dictionaries from the language you select, often resulting in more correct scans.
+- Be aware that Tesseract can misinterprate "1" (one), "I" (capital letter i), and "l" (lower case letter l) as each other.
+- Have uniform lighting and perspective for the text across the images. Taking a pictures where one part of the bookpage is in focus, but other parts are blurry or in a darker light will lead to inaccurate results.
+- Know the Tesseract page segmentation modes. This will be useful for parsing differently formated (see [enum IDs](C:\Users\Alex5\Documents\GitHub\kotlin-tesseract-api\src\main\kotlin\com\tesseract\api\model) and [tricks for improving results under useful links](#useful-links)). Most of the time, 1, 3, or 6 will be enough.
 
 ## Usage (Windows)
 
