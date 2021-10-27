@@ -13,6 +13,8 @@ https://grd-tesseract-api.herokuapp.com/swagger
 - Be aware that Tesseract can misinterprate "1" (one), "I" (capital letter i), and "l" (lower case letter l) as each other.
 - Have uniform lighting and perspective for the text across the images. Taking a pictures where one part of the bookpage is in focus, but other parts are blurry or in a darker light will lead to inaccurate results.
 - Know the Tesseract page segmentation modes. This will be useful for parsing differently formated (see [enum IDs](C:\Users\Alex5\Documents\GitHub\kotlin-tesseract-api\src\main\kotlin\com\tesseract\api\model) and [tricks for improving results under useful links](#useful-links)). Most of the time, 1, 3, or 6 will be enough.
+- Often it will be useful to remove colour from the picture, as it may reduce the filesize and allow you to use the saved bytes on making the iamge larger.
+- TODO various iamge manipulation like using editing software to sharpen image contrasts etc.
 
 ## Usage (Windows)
 
