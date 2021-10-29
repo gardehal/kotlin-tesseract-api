@@ -25,10 +25,11 @@ class AppProperties
     lateinit var languagesFile: String
 
     // .env, which enables Heroku to set the save values when the .env file is not present (i.e. don't push .env to Git)
-    private val envFile = File("src\\\\main\\\\resources\\\\.env")
+    private val envFile = File("""src\\main\\resources\\.env""")
     private var dotEnv = if(envFile.exists()) dotenv() else null
 
-    val isProduction: String = if(dotEnv != null) dotEnv!!["IS_PRODUCTION"]!! else System.getenv("IS_PRODUCTION")
+    val isProduction: Boolean = if(dotEnv != null) dotEnv!!["IS_PRODUCTION"]!!.toBoolean() else System.getenv("IS_PRODUCTION")!!.toBoolean()
+    val logDebug: Boolean = if(dotEnv != null) dotEnv!!["LOG_DEBUG"]!!.toBoolean() else System.getenv("LOG_DEBUG")!!.toBoolean()
     val apiKeys: String = if(dotEnv != null) dotEnv!!["API_KEYS"]!! else System.getenv("API_KEYS")
     val tempDir: String = if(dotEnv != null) dotEnv!!["TEMP_DIR"]!! else System.getenv("TEMP_DIR")
     val maxFileSizeBytes: Long = if(dotEnv != null) dotEnv!!["MAX_FILE_SIZE_BYTES"]!!.toLong() else System.getenv("MAX_FILE_SIZE_BYTES").toLong()
