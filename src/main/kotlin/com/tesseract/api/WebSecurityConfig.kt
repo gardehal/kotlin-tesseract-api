@@ -1,7 +1,6 @@
 package com.tesseract.api;
 
-import com.tesseract.api.intercept.ApiKeyFilter
-import com.tesseract.api.intercept.AppProperties
+import com.tesseract.api.intercept.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
@@ -16,18 +15,27 @@ import org.springframework.security.config.http.SessionCreationPolicy
 @Order(1)
 class WebSecurityConfig: WebSecurityConfigurerAdapter()
 {
+    val log by injectLogger()
+
     @Autowired
     lateinit var appProperties: AppProperties
 
     override fun configure(http: HttpSecurity)
     {
-        val filter = ApiKeyFilter(appProperties.tokenHeaderName!!)
-        val keys = appProperties.apiKeys!!
+        val filter = ApiKeyFilter(appProperties.tokenHeaderName)
+        val keys = appProperties.apiKeys
         filter.setAuthenticationManager { authentication ->
             val userKey = authentication.principal.toString()
             if(userKey.length != 32 || userKey.contains(";") || !keys.contains(userKey))
-                throw BadCredentialsException("The API key was not found.")
+            {
+                if(appProperties.logDebug)
+                    log.warning("Authentication failed with key '$userKey'.")
 
+                throw BadCredentialsException("The API key was not found.")
+            }
+
+            if(appProperties.logDebug)
+                log.info("Authentication ok with key '$userKey'.")
             authentication.isAuthenticated = true
             authentication
         }
