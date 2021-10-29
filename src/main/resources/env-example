@@ -1,0 +1,10 @@
+# Local settings, do not push to Heroku
+IS_PRODUCTION = false
+LOG_DEBUG = true
+API_KEYS = value1;value2;
+TEMP_DIR = d:/temp
+MAX_FILE_SIZE_BYTES = 512000
+
+# https://github.com/tesseract-ocr/tessdoc/blob/master/Data-Files-in-different-versions.md
+INSTALLED_LANGUAGES = eng;nor;swe;dan;deu;fra;rus;lat;
+INSTALLED_FULL_PATH = path\\to\\tessdata
