@@ -3,6 +3,7 @@ package com.tesseract.api.service
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.tesseract.api.intercept.AppProperties
+import com.tesseract.api.intercept.lazyLogger
 import com.tesseract.api.model.*
 import net.sourceforge.tess4j.Tesseract
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,6 +16,8 @@ import java.util.*
 @Service
 class TesseractService
 {
+    val log by lazyLogger()
+
     @Autowired
     lateinit var appProperties: AppProperties
 
@@ -100,12 +103,21 @@ class TesseractService
                   pageSeg: PageSegmentationMode, engineMode: OcrEngineMode): String
     {
         val tesseract = Tesseract()
-        tesseract.setLanguage((lang.key))
+        tesseract.setLanguage(lang.key)
         tesseract.setDatapath(appProperties.installFullPath)
         tesseract.setPageSegMode(pageSeg.ordinal)
         tesseract.setOcrEngineMode(engineMode.ordinal)
 //        tesseract.setTessVariable("user_defined_dpi", appProperties.userDefinedDpi) // Optional, Tesseract will approximate DPI and resolution
 
+        if(appProperties.logDebug)
+        {
+            log.info("Begin Tesseract OCR reading:")
+            log.info("setLanguage: ${lang.key}")
+            log.info("setDatapath: ${appProperties.installFullPath}")
+            log.info("setPageSegMode: $pageSeg (${pageSeg.ordinal})")
+            log.info("setOcrEngineMode: $engineMode (${engineMode.ordinal})")
+//            log.info("setTessVariable: user_defined_dpi ${appProperties.userDefinedDpi}")
+        }
         return tesseract.doOCR(file)
     }
 
