@@ -3,6 +3,8 @@ package com.tesseract.api.controller
 import com.tesseract.api.dto.TesseractResultConverter
 import com.tesseract.api.dto.TesseractResultDto
 import com.tesseract.api.intercept.AppProperties
+import com.tesseract.api.intercept.exception
+import com.tesseract.api.intercept.lazyLogger
 import com.tesseract.api.model.*
 import com.tesseract.api.service.TesseractService
 import com.tesseract.api.service.UtilService
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class TesseractController(tesseractService: TesseractService? = null, utilService: UtilService? = null)
 {
+    val log by lazyLogger()
+
     @Autowired
     lateinit var appProperties: AppProperties
 
@@ -42,8 +46,7 @@ class TesseractController(tesseractService: TesseractService? = null, utilServic
         }
         catch (e: Exception)
         {
-            println(" ---- TesseractController, getHealth error ---- ")
-            e.printStackTrace()
+            log.exception(e)
 
             ResponseEntity.status(500).body(
                 WrappedResponse<HealthStatus>(code = 500, message = "Internal error.").validated())
@@ -65,8 +68,7 @@ class TesseractController(tesseractService: TesseractService? = null, utilServic
         }
         catch (e: Exception)
         {
-            println(" ---- TesseractController, getLanguages error ---- ")
-            e.printStackTrace()
+            log.exception(e)
 
             ResponseEntity.status(500).body(
                 WrappedResponse<List<TesseractLanguage>>(code = 500, message = "Internal error.").validated())
@@ -138,8 +140,7 @@ class TesseractController(tesseractService: TesseractService? = null, utilServic
         }
         catch (e: Exception)
         {
-            println(" ---- TesseractController, scanImage error ---- ")
-            e.printStackTrace()
+            log.exception(e)
 
             ResponseEntity.status(500).body(
                 WrappedResponse<TesseractResultDto>(code = 500, message = "Internal error.").validated())
